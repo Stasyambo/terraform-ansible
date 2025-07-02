@@ -1,0 +1,21 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Replace index.html
+  copy:
+    content: "Hello from {{ inventory_hostname }}!"
+    dest: /var/www/html/index.html
+    mode: '0644'
+
+- name: Ensure nginx is running
+  service:
+    name: nginx
+    state: started
+    enabled: true

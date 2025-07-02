@@ -1,0 +1,38 @@
+# ansible/roles/base/tasks/main.yml
+- name: Change hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Install packages
+  apt:
+    name:
+      - net-tools
+      - dnsutils
+      - wget
+      - curl
+      - mc
+      - rsync
+    state: present
+    update_cache: true
+- name: Ensure user freesty exists
+  user:
+    name: freesty
+    groups: sudo
+    shell: /bin/bash
+    create_home: yes
+
+- name: Create .ssh directory for freesty
+  file:
+    path: /home/freesty/.ssh
+    state: directory
+    owner: freesty
+    group: freesty
+    mode: '0700'
+
+- name: Copy SSH public key for freesty
+  copy:
+    content: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+    dest: /home/freesty/.ssh/authorized_keys
+    owner: freesty
+    group: freesty
+    mode: '0600'

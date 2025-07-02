@@ -1,0 +1,6 @@
+server {
+    listen 3000;
+    location / {
+        proxy_pass http://{{ hostvars[groups['backend'][0]].ansible_host }}:80;
+    }
+}
